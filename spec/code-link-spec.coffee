@@ -1,6 +1,6 @@
 {shell} = require 'electron'
 
-describe "link package", ->
+describe "code-link package", ->
   beforeEach ->
     waitsForPromise ->
       atom.packages.activatePackage('language-gfm')
@@ -12,7 +12,7 @@ describe "link package", ->
       atom.packages.activatePackage('language-hyperlink')
 
     waitsForPromise ->
-      activationPromise = atom.packages.activatePackage('link')
+      activationPromise = atom.packages.activatePackage('code-link')
       atom.commands.dispatch(atom.views.getView(atom.workspace), 'link:open')
       activationPromise
 
@@ -23,31 +23,34 @@ describe "link package", ->
 
       runs ->
         editor = atom.workspace.getActiveTextEditor()
-        editor.setText("// \"http://github.com\"")
+        editor.setText("// \"file://package.json:10\"")
 
-        spyOn(shell, 'openExternal')
+        spyOn(atom.workspace, 'open').andCallThrough();
+        spyOn(editor, 'setCursorScreenPosition').andCallThrough();
+
         atom.commands.dispatch(atom.views.getView(editor), 'link:open')
-        expect(shell.openExternal).not.toHaveBeenCalled()
+        expect(atom.workspace.open).not.toHaveBeenCalled()
 
-        editor.setCursorBufferPosition([0, 4])
+        editor.setCursorBufferPosition([0, 17])
+
         atom.commands.dispatch(atom.views.getView(editor), 'link:open')
 
-        expect(shell.openExternal).toHaveBeenCalled()
-        expect(shell.openExternal.argsForCall[0][0]).toBe 'http://github.com'
+        expect(atom.workspace.open).toHaveBeenCalled()
+        expect(atom.workspace.open.argsForCall[0][0]).toBe 'package.json'
 
-        shell.openExternal.reset()
+        atom.workspace.open.reset()
         editor.setCursorBufferPosition([0, 8])
         atom.commands.dispatch(atom.views.getView(editor), 'link:open')
 
-        expect(shell.openExternal).toHaveBeenCalled()
-        expect(shell.openExternal.argsForCall[0][0]).toBe 'http://github.com'
+        expect(atom.workspace.open).toHaveBeenCalled()
+        expect(atom.workspace.open.argsForCall[0][0]).toBe 'package.json'
 
-        shell.openExternal.reset()
+        atom.workspace.open.reset()
         editor.setCursorBufferPosition([0, 21])
         atom.commands.dispatch(atom.views.getView(editor), 'link:open')
 
-        expect(shell.openExternal).toHaveBeenCalled()
-        expect(shell.openExternal.argsForCall[0][0]).toBe 'http://github.com'
+        expect(atom.workspace.open).toHaveBeenCalled()
+        expect(atom.workspace.open.argsForCall[0][0]).toBe 'package.json'
 
     describe "when the cursor is on a [name][url-name] style markdown link", ->
       it "opens the named url", ->
@@ -60,39 +63,39 @@ describe "link package", ->
             you should [click][here]
             you should not [click][her]
 
-            [here]: http://github.com
+            [here]: file://package.json:10
           """
 
-          spyOn(shell, 'openExternal')
+          spyOn(atom.workspace, 'open').andCallThrough();
           editor.setCursorBufferPosition([0, 0])
           atom.commands.dispatch(atom.views.getView(editor), 'link:open')
-          expect(shell.openExternal).not.toHaveBeenCalled()
+          expect(atom.workspace.open).not.toHaveBeenCalled()
 
           editor.setCursorBufferPosition([0, 20])
           atom.commands.dispatch(atom.views.getView(editor), 'link:open')
 
-          expect(shell.openExternal).toHaveBeenCalled()
-          expect(shell.openExternal.argsForCall[0][0]).toBe 'http://github.com'
+          expect(atom.workspace.open).toHaveBeenCalled()
+          expect(atom.workspace.open.argsForCall[0][0]).toBe 'package.json'
 
-          shell.openExternal.reset()
+          atom.workspace.open.reset()
           editor.setCursorBufferPosition([1, 24])
           atom.commands.dispatch(atom.views.getView(editor), 'link:open')
 
-          expect(shell.openExternal).not.toHaveBeenCalled()
+          expect(atom.workspace.open).not.toHaveBeenCalled()
 
-    it "does not open non http/https links", ->
+    it "does not open http/https links", ->
       waitsForPromise ->
         atom.workspace.open('sample.js')
 
       runs ->
         editor = atom.workspace.getActiveTextEditor()
-        editor.setText("// ftp://github.com\n")
+        editor.setText("// http://github.com\n")
 
-        spyOn(shell, 'openExternal')
+        spyOn(atom.workspace, 'open').andCallThrough();
         atom.commands.dispatch(atom.views.getView(editor), 'link:open')
-        expect(shell.openExternal).not.toHaveBeenCalled()
+        expect(atom.workspace.open).not.toHaveBeenCalled()
 
         editor.setCursorBufferPosition([0, 5])
         atom.commands.dispatch(atom.views.getView(editor), 'link:open')
 
-        expect(shell.openExternal).not.toHaveBeenCalled()
+        expect(atom.workspace.open).not.toHaveBeenCalled()

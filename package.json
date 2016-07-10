@@ -1,10 +1,10 @@
 {
-  "name": "link",
-  "version": "0.31.1",
-  "main": "./lib/link",
-  "description": "Opens http/https links under the cursor using `ctrl-shift-o`.",
+  "name": "code-link",
+  "version": "0.0.1",
+  "main": "./lib/code-link",
+  "description": "Opens file's links under the cursor using `ctrl-shift-o`.",
   "license": "MIT",
-  "repository": "https://github.com/atom/link",
+  "repository": "https://github.com/ManRueda/code-link",
   "engines": {
     "atom": "*"
   },

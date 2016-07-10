@@ -3,6 +3,7 @@ url = require 'url'
 _ = require 'underscore-plus'
 
 selector = null
+PROTOCOL = 'file:'
 
 module.exports =
   activate: ->
@@ -18,9 +19,15 @@ openLink = ->
   if editor.getGrammar().scopeName is 'source.gfm'
     link = linkForName(editor.getBuffer(), link)
 
-  {protocol} = url.parse(link)
-  if protocol is 'http:' or protocol is 'https:'
-    shell.openExternal(link)
+  {protocol, host, path} = url.parse(link)
+  host = host + (if path != '/' then path else '')
+  if protocol is PROTOCOL
+    # Exract the file and line number of the host (try with a second regex if the file doesn't have line number)
+    extract = host.match(/^(.*)\:(\d*)$/i) || host.match(/^(.*)$/)
+    extract[2] = extract[2] || 1 # if the line number is missing, put one
+
+    atom.workspace.open(extract[1]).then (editor) ->
+      editor.setCursorScreenPosition([extract[2] - 1, 0]);
 
 # Get the link under the cursor in the editor
 #

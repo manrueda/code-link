@@ -1,4 +1,15 @@
-# Link package
-[![OS X Build Status](https://travis-ci.org/atom/link.png?branch=master)](https://travis-ci.org/atom/link) [![Windows Build Status](https://ci.appveyor.com/api/projects/status/1d3cb8ktd48k9vnl/branch/master?svg=true)](https://ci.appveyor.com/project/Atom/link/branch/master) [![Dependency Status](https://david-dm.org/atom/link.svg)](https://david-dm.org/atom/link)
+# Code Link package
+[![Linux Build Status](https://travis-ci.org/ManRueda/code-link.png?branch=master)](https://travis-ci.org/ManRueda/code-link)  [![Dependency Status](https://david-dm.org/ManRueda/code-link.svg)](https://david-dm.org/ManRueda/code-link)
 
-Opens http(s) links under the cursor using <kbd>ctrl-shift-o</kbd>.
+Opens links to files in the project, with line number.
+
+The links to project files should have the file:// protocol.
+
+Examples:
+```
+file://package.json:10
+```
+[Link to package.json line 10](file://package.json:10)
+
+Based on [Atom Link](https://github.com/atom/link)
+Use the same shortcut as Atom Link, click using <kbd>ctrl-shift-o</kbd>.

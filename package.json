@@ -1,6 +1,6 @@
 {
   "name": "code-link",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "main": "./lib/code-link",
   "description": "Opens file's links under the cursor using `ctrl-shift-o`.",
   "license": "MIT",
